@@ -77,16 +77,16 @@ export default function DapoerNusantara() {
     return () => clearInterval(timer);
   }, [expImages.length]);
 
-  const getExpIndex = (offset) => {
+  const getExpIndex = (offset: number) => {
     const len = expImages.length;
     return (((expIndex + offset) % len) + len) % len;
   };
 
   // --- State & Handlers for Reviews Sliders ---
-  const reviewContainerRefGoogle = useRef(null);
-  const reviewContainerRefTrip = useRef(null);
+  const reviewContainerRefGoogle = useRef<HTMLDivElement>(null);
+  const reviewContainerRefTrip = useRef<HTMLDivElement>(null);
 
-  const scrollReviews = (ref, direction) => {
+  const scrollReviews = (ref: React.RefObject<HTMLDivElement | null>, direction: number) => {
     if (ref.current) {
       // 320px represents card width + gap approximation
       const scrollAmount = 320; 
