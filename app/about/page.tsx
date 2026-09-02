@@ -66,9 +66,15 @@ const globalStyles = `
   }
 `;
 
-const Button = ({ children, variant = 'dark', className = '' }) => {
+interface ButtonProps {
+  children: React.ReactNode;
+  variant?: 'dark' | 'light' | 'white';
+  className?: string;
+}
+
+const Button = ({ children, variant = 'dark', className = '' }: ButtonProps) => {
   const baseStyle = "inline-flex items-center justify-center gap-3 px-7 py-3.5 rounded-full text-sm font-medium transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]";
-  const variants = {
+  const variants: Record<'dark' | 'light' | 'white', string> = {
     dark: `bg-[#3E1511] text-[#F6ECE1] hover:bg-[#2c0e0b]`,
     light: `bg-[#F6ECE1] text-[#3E1511] hover:bg-white`,
     white: `bg-white text-[#3E1511] shadow-sm hover:bg-[#F6ECE1]`
