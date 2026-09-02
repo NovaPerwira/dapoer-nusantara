@@ -1,5 +1,8 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
+// import React from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+// import { ArrowRight } from 'lucide-react';
 
 // Common colors based on the new design
 const colors = {
@@ -59,6 +62,18 @@ const Logo = () => (
   </div>
 );
 
+const Reveal = ({ children, className = '', delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 28 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay }}
+    viewport={{ once: true, margin: '-80px' }}
+    className={className}
+  >
+    {children}
+  </motion.div>
+);
+
 export default function DapoerNusantara() {
   // --- State for Experiences Slider ---
   const expImages = [
@@ -68,6 +83,7 @@ export default function DapoerNusantara() {
     "https://images.unsplash.com/photo-1544148103-0773bf10d330?q=80&w=2070&auto=format&fit=crop"
   ];
   const [expIndex, setExpIndex] = useState(0);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Auto-play experiences
   useEffect(() => {
@@ -94,6 +110,13 @@ export default function DapoerNusantara() {
     }
   };
 
+  const springTransition = { 
+    type: "spring" as const, 
+    stiffness: 80, 
+    damping: 15, 
+    mass: 1 
+  };
+
   return (
     <div className="min-h-screen font-sans" style={{ backgroundColor: colors.beige }}>
       
@@ -102,7 +125,10 @@ export default function DapoerNusantara() {
       <div className="relative w-full h-[85vh] flex flex-col justify-between overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
-          <img 
+          <motion.img 
+            initial={{ scale: 1.08 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 2.2, ease: 'easeOut' }}
             src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=2070&auto=format&fit=crop" 
             alt="Restaurant Interior" 
             className="w-full h-full object-cover"
@@ -112,35 +138,65 @@ export default function DapoerNusantara() {
         </div>
 
         {/* Floating Unified Navbar */}
-        <nav className="relative z-20 w-full px-6 py-6 md:py-8 flex justify-center">
-           <div className="bg-black/20 backdrop-blur-md border border-white/20 p-2 pl-4 pr-2 rounded-full flex items-center justify-between w-full max-w-5xl shadow-2xl">
+          <motion.nav
+           initial={{ opacity: 0, y: -20 }}
+           animate={{ opacity: 1, y: 0 }}
+           transition={{ duration: 0.7, delay: 0.25 }}
+           className="relative z-20 w-full px-6 py-6 md:py-8 flex justify-center"
+          >
+            <div className="bg-black/20 backdrop-blur-md border border-white/20 p-2 pl-4 pr-2 rounded-full flex items-center justify-between w-full max-w-5xl shadow-2xl relative">
               
               <Logo />
               
               {/* Center Links */}
-              <div className="hidden md:flex items-center gap-6 text-[11px] uppercase tracking-wider text-white/80 font-medium px-4">
-                 <a href="#" className="hover:text-white transition-colors">Home</a>
-                 <a href="#" className="hover:text-white transition-colors">Menu</a>
-                 <a href="#" className="hover:text-white transition-colors">Experiences</a>
+                <div className="hidden md:flex items-center gap-6 text-[11px] uppercase tracking-wider text-white/80 font-medium px-4">
+                  <a href="#home" className="hover:text-white transition-colors">Home</a>
+                  <a href="#menu" className="hover:text-white transition-colors">Menu</a>
+                  <a href="#experiences" className="hover:text-white transition-colors">Experiences</a>
                  {/* Active Boxed Link */}
-                 <a href="#" className="border border-white/40 px-4 py-1.5 rounded-full text-white">About</a>
+                 <a href="#about" className="border border-white/40 px-4 py-1.5 rounded-full text-white">About</a>
                  <a href="#" className="hover:text-white transition-colors">Special Promo</a>
                  <a href="#" className="hover:text-white transition-colors">Blog</a>
               </div>
 
               {/* Right Reservation Button */}
-              <button className="bg-[#451A14] text-[#EBE0D3] px-6 py-2 rounded-full text-[11px] uppercase tracking-wider font-semibold hover:bg-[#31110d] transition-colors ml-4">
+              <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }} className="bg-[#451A14] text-[#EBE0D3] px-6 py-2 rounded-full text-[11px] uppercase tracking-wider font-semibold hover:bg-[#31110d] transition-colors ml-4">
                 Reservation
-              </button>
+              </motion.button>
+              <motion.button
+                whileTap={{ scale: 0.9 }}
+                onClick={() => setIsMenuOpen((open) => !open)}
+                className="md:hidden w-10 h-10 rounded-full border border-white/30 text-white flex items-center justify-center ml-2"
+                aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+                aria-expanded={isMenuOpen}
+              >
+                <span className="text-lg leading-none">{isMenuOpen ? '×' : '≡'}</span>
+              </motion.button>
+              <AnimatePresence>
+                {isMenuOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10, scale: 0.96 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -10, scale: 0.96 }}
+                    className="absolute top-full right-0 mt-3 w-48 rounded-2xl border border-white/20 bg-[#451A14]/95 backdrop-blur-md p-3 shadow-2xl md:hidden"
+                  >
+                    {['Home', 'Menu', 'Experiences', 'About'].map((item) => (
+                      <a key={item} href={`#${item.toLowerCase()}`} onClick={() => setIsMenuOpen(false)} className="block rounded-xl px-4 py-3 text-xs uppercase tracking-widest text-white/80 hover:bg-white/10 hover:text-white transition-colors">
+                        {item}
+                      </a>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
            </div>
-        </nav>
+        </motion.nav>
 
         {/* Hero Text */}
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pb-32 md:pb-40">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif text-white/95 leading-tight max-w-2xl text-shadow-lg">
+        <motion.div initial={{ opacity: 0, y: 35 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.55, ease: 'easeOut' }} className="relative z-10 w-full max-w-7xl mx-auto px-6 pb-32 md:pb-40">
+          <h1 id="home" className="text-4xl md:text-5xl lg:text-6xl font-serif text-white/95 leading-tight max-w-2xl text-shadow-lg">
             Lorem ipsum dolor sit<br/>amet, consectetur adipiscing
           </h1>
-        </div>
+        </motion.div>
 
         {/* Hero Bottom Convex Curve with Gold Stroke */}
         <div className="absolute bottom-0 left-0 w-full z-20 translate-y-[1px]">
@@ -156,70 +212,107 @@ export default function DapoerNusantara() {
 
       {/* ================= ABOUT US SECTION ================= */}
       {}
-      <section className="max-w-6xl mx-auto px-6 py-20 lg:py-32 relative z-20">
+      <section id="about" className="max-w-6xl mx-auto px-6 py-20 lg:py-32 relative z-20">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Text Content */}
-          <div className="flex flex-col justify-center">
+          <Reveal className="flex flex-col justify-center">
             <h2 className="text-4xl md:text-5xl font-serif text-[#451A14] mb-8">About Us</h2>
             <p className="text-[#451A14]/80 leading-relaxed text-sm md:text-base pr-4 text-justify">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
             </p>
-          </div>
+          </Reveal>
           
           {/* Image */}
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl h-[300px] md:h-[350px]">
-             <img 
+          <Reveal delay={0.15} className="relative rounded-2xl overflow-hidden shadow-2xl h-[300px] md:h-[350px] group">
+             <motion.img 
+               whileHover={{ scale: 1.06 }}
+               transition={{ duration: 0.7 }}
                src="https://images.unsplash.com/photo-1544148103-0773bf10d330?q=80&w=2070&auto=format&fit=crop" 
                alt="Restaurant Ambience"
                className="absolute inset-0 w-full h-full object-cover"
              />
-          </div>
+             <div className="absolute inset-0 bg-[#451A14]/10 group-hover:bg-transparent transition-colors duration-500" />
+          </Reveal>
         </div>
       </section>
 
 
       {/* ================= SIGNATURE MENU ================= */}
       {}
-      <section className="max-w-6xl mx-auto px-6 pb-24 relative z-20">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <section id="menu" className="max-w-6xl mx-auto px-6 pb-24 relative z-20">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+        
+        {/* Column 1 (Left Images) */}
+        {/* z-0 agar berada di belakang kotak CTA tengah saat animasi */}
+        <div className="flex flex-col gap-6 relative z-0">
+          <motion.div 
+            initial={{ x: "100%", y: "50%", scale: 0.5, opacity: 0 }}
+            whileInView={{ x: 0, y: 0, scale: 1, opacity: 1 }}
+            transition={{ ...springTransition, delay: 0.1 }}
+            viewport={{ once: true, margin: "-100px" }}
+            className="rounded-2xl overflow-hidden shadow-xl relative aspect-[5/4]"
+          >
+            <img src="https://images.unsplash.com/photo-1563379926898-05f4575a45d8?q=80&w=1000&auto=format&fit=crop" alt="Pasta Dish" className="absolute inset-0 w-full h-full object-cover" />
+          </motion.div>
           
-          {/* Column 1 (Left Images) */}
-          <div className="flex flex-col gap-6">
-             <div className="rounded-2xl overflow-hidden shadow-xl relative aspect-[5/4]">
-                <img src="https://images.unsplash.com/photo-1563379926898-05f4575a45d8?q=80&w=1000&auto=format&fit=crop" alt="Pasta Dish" className="absolute inset-0 w-full h-full object-cover" />
-             </div>
-             <div className="rounded-2xl overflow-hidden shadow-xl relative aspect-[5/4]">
-                <img src="https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=1000&auto=format&fit=crop" alt="Rice Dish" className="absolute inset-0 w-full h-full object-cover" />
-             </div>
-          </div>
-
-          {/* Column 2 (Center CTA) */}
-          <div className="bg-[#451A14] rounded-2xl shadow-2xl flex flex-col items-center justify-center p-10 text-center min-h-[300px]">
-             <h3 className="text-3xl md:text-4xl font-serif text-[#EBE0D3] leading-snug mb-8">
-               Try Our<br/>Signature<br/>Menu!
-             </h3>
-             <button className="bg-[#EBE0D3] text-[#451A14] px-6 py-2.5 rounded-full text-sm font-bold flex items-center hover:bg-white transition-colors">
-               Explore Menu <ArrowRight className="w-4 h-4 ml-2" />
-             </button>
-          </div>
-
-          {/* Column 3 (Right Images) */}
-          <div className="flex flex-col gap-6">
-             <div className="rounded-2xl overflow-hidden shadow-xl relative aspect-[5/4]">
-                <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2?q=80&w=1000&auto=format&fit=crop" alt="Seafood Dish" className="absolute inset-0 w-full h-full object-cover" />
-             </div>
-             <div className="rounded-2xl overflow-hidden shadow-xl relative aspect-[5/4]">
-                <img src="https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?q=80&w=1000&auto=format&fit=crop" alt="Creamy Dish" className="absolute inset-0 w-full h-full object-cover" />
-             </div>
-          </div>
-          
+          <motion.div 
+            initial={{ x: "100%", y: "-50%", scale: 0.5, opacity: 0 }}
+            whileInView={{ x: 0, y: 0, scale: 1, opacity: 1 }}
+            transition={{ ...springTransition, delay: 0.3 }}
+            viewport={{ once: true, margin: "-100px" }}
+            className="rounded-2xl overflow-hidden shadow-xl relative aspect-[5/4]"
+          >
+            <img src="https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=1000&auto=format&fit=crop" alt="Rice Dish" className="absolute inset-0 w-full h-full object-cover" />
+          </motion.div>
         </div>
-      </section>
+
+        {/* Column 2 (Center CTA) */}
+        {/* z-10 agar menutupi gambar saat mereka baru mulai keluar dari tengah */}
+        <motion.div 
+          initial={{ scale: 0.8, opacity: 0 }}
+          whileInView={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true, margin: "-100px" }}
+          className="bg-[#451A14] rounded-2xl shadow-2xl flex flex-col items-center justify-center p-10 text-center min-h-[300px] relative z-10"
+        >
+          <h3 className="text-3xl md:text-4xl font-serif text-[#EBE0D3] leading-snug mb-8">
+            Try Our<br/>Signature<br/>Menu!
+          </h3>
+          <button className="bg-[#EBE0D3] text-[#451A14] px-6 py-2.5 rounded-full text-sm font-bold flex items-center hover:bg-white transition-colors">
+            Explore Menu <ArrowRight className="w-4 h-4 ml-2" />
+          </button>
+        </motion.div>
+
+        {/* Column 3 (Right Images) */}
+        <div className="flex flex-col gap-6 relative z-0">
+          <motion.div 
+            initial={{ x: "-100%", y: "50%", scale: 0.5, opacity: 0 }}
+            whileInView={{ x: 0, y: 0, scale: 1, opacity: 1 }}
+            transition={{ ...springTransition, delay: 0.2 }}
+            viewport={{ once: true, margin: "-100px" }}
+            className="rounded-2xl overflow-hidden shadow-xl relative aspect-[5/4]"
+          >
+            <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2?q=80&w=1000&auto=format&fit=crop" alt="Seafood Dish" className="absolute inset-0 w-full h-full object-cover" />
+          </motion.div>
+
+          <motion.div 
+            initial={{ x: "-100%", y: "-50%", scale: 0.5, opacity: 0 }}
+            whileInView={{ x: 0, y: 0, scale: 1, opacity: 1 }}
+            transition={{ ...springTransition, delay: 0.4 }}
+            viewport={{ once: true, margin: "-100px" }}
+            className="rounded-2xl overflow-hidden shadow-xl relative aspect-[5/4]"
+          >
+            <img src="https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?q=80&w=1000&auto=format&fit=crop" alt="Creamy Dish" className="absolute inset-0 w-full h-full object-cover" />
+          </motion.div>
+        </div>
+        
+      </div>
+    </section>
 
 
       {/* ================= EXPERIENCES SLIDER & TRANSITION ================= */}
       {}
-      <section className="w-full relative pt-12 pb-24">
+      <section id="experiences" className="w-full relative pt-12 pb-24">
         
         {/* Title */}
         <div className="max-w-2xl mx-auto px-6 text-center mb-16 relative z-30">
@@ -240,9 +333,9 @@ export default function DapoerNusantara() {
            </div>
 
            {/* Center Main Image */}
-           <div className="relative z-40 w-[80%] md:w-[50%] h-full rounded-3xl overflow-hidden shadow-2xl border-4 border-black/5 transition-all duration-700">
-              <img src={expImages[expIndex]} alt="Main Experience" className="w-full h-full object-cover transition-all duration-700" />
-           </div>
+            <motion.div key={expIndex} initial={{ opacity: 0.35, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6 }} className="relative z-40 w-[80%] md:w-[50%] h-full rounded-3xl overflow-hidden shadow-2xl border-4 border-black/5 transition-all duration-700">
+              <motion.img whileHover={{ scale: 1.05 }} transition={{ duration: 0.8 }} src={expImages[expIndex]} alt="Main Experience" className="w-full h-full object-cover transition-all duration-700" />
+            </motion.div>
 
            {/* Right Phantom Image */}
            <div 
