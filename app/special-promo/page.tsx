@@ -11,8 +11,6 @@ import {
   Sparkles,
   UsersRound,
 } from 'lucide-react';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
 import './special-promo.css';
 
 const dishes = [
@@ -87,7 +85,6 @@ export default function SpecialPromoPage() {
           unoptimized
         />
         <div className="promo-hero-shade" />
-        <Navbar activePage="promo" />
 
         <div className="promo-hero-content">
           <p className="promo-eyebrow">Rasa Nusantara, disajikan istimewa</p>
@@ -231,7 +228,6 @@ export default function SpecialPromoPage() {
         </div>
       </section>
 
-      <Footer />
     </main>
   );
 }

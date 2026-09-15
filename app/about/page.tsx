@@ -1,8 +1,6 @@
 'use client';
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
 
 interface ButtonProps {
   children: React.ReactNode;
@@ -32,7 +30,6 @@ export default function AboutUsPage() {
       <div className="relative w-full h-[75vh] min-h-[600px] overflow-hidden shadow-xl" style={{ borderRadius: '0 0 50% 50% / 0 0 8vw' }}>
         <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80" alt="Restaurant Interior" className="absolute inset-0 w-full h-full object-cover object-center" />
         <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
-        <Navbar activePage="about" />
         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6 text-[#F6ECE1] pt-16">
           <h1 className="font-serif text-4xl md:text-5xl lg:text-[4.5rem] leading-[1.1] max-w-4xl mx-auto drop-shadow-lg mb-6">Lorem ipsum dolor sit amet, consectetur adipiscing</h1>
           <p className="font-sans text-sm md:text-base max-w-2xl mx-auto opacity-90 leading-relaxed drop-shadow-md">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
@@ -107,7 +104,6 @@ export default function AboutUsPage() {
         </div>
       </section>
 
-      <Footer />
     </div>
   );
 }

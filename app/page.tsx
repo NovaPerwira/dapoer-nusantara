@@ -1,8 +1,6 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
 
 // Common colors based on the new design
 const colors = {
@@ -125,9 +123,6 @@ export default function DapoerNusantara() {
           {/* Subtle gradient to make text readable */}
           <div className="absolute inset-0 bg-black/40 bg-gradient-to-t from-black/70 via-transparent to-black/30"></div>
         </div>
-
-        {/* Shared Navbar */}
-        <Navbar activePage="home" />
 
         {/* Hero Text - positioned at bottom */}
         <div className="absolute bottom-0 left-0 right-0 z-10">
@@ -525,8 +520,6 @@ export default function DapoerNusantara() {
         </div>
       </section>
 
-      {/* ================= FOOTER ================= */}
-      <Footer />
 
     </div>
   );

@@ -1,5 +1,7 @@
 'use client';
 import React, { useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 
 export type NavPage = 'home' | 'menu' | 'experiences' | 'about' | 'promo' | 'blog';
@@ -18,16 +20,28 @@ const NavLogo = () => (
 );
 
 const navLinks: { label: string; href: string; page: NavPage }[] = [
-  { label: 'Home',          href: '/',             page: 'home' },
-  { label: 'Menu',          href: '/menu',          page: 'menu' },
-  { label: 'Experiences',   href: '/#experiences',  page: 'experiences' },
-  { label: 'About',         href: '/about',         page: 'about' },
+  { label: 'Home', href: '/', page: 'home' },
+  { label: 'Menu', href: '/menu', page: 'menu' },
+  { label: 'Experiences', href: '/experience', page: 'experiences' },
+  { label: 'About', href: '/about', page: 'about' },
   { label: 'Special Promo', href: '/special-promo', page: 'promo' },
-  { label: 'Blog',          href: '/#blog',         page: 'blog' },
+  { label: 'Blog', href: '/blog', page: 'blog' },
 ];
 
-export default function Navbar({ activePage = 'home' }: { activePage?: NavPage }) {
+export default function Navbar() {
+  const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const getActivePage = (): NavPage => {
+    if (pathname === '/menu') return 'menu';
+    if (pathname === '/about') return 'about';
+    if (pathname === '/special-promo') return 'promo';
+    if (pathname === '/blog') return 'blog';
+    if (pathname === '/experience') return 'experiences';
+    return 'home';
+  };
+
+  const activePage = getActivePage();
 
   return (
     <motion.nav
@@ -37,34 +51,33 @@ export default function Navbar({ activePage = 'home' }: { activePage?: NavPage }
       className="absolute top-0 left-0 right-0 z-50 w-full px-6 py-6 md:py-8 flex justify-center"
     >
       <div className="bg-black/20 backdrop-blur-md border border-white/20 p-2 pl-6 pr-2 flex items-center justify-between w-full max-w-5xl rounded-full shadow-2xl relative">
-        <NavLogo />
+        <Link href="/" aria-label="Home" className="flex items-center" onClick={() => setIsMenuOpen(false)}>
+          <NavLogo />
+        </Link>
 
-        {/* Desktop Links */}
         <div className="hidden md:flex items-center gap-6 text-[13px] text-white/90 font-medium px-4">
           {navLinks.map((link) =>
             link.page === activePage ? (
-              <a key={link.page} href={link.href} className="border border-white/40 rounded-full px-5 py-1.5 text-white">
+              <Link key={link.page} href={link.href} className="border border-white/40 rounded-full px-5 py-1.5 text-white">
                 {link.label}
-              </a>
+              </Link>
             ) : (
-              <a key={link.page} href={link.href} className="hover:text-white transition-colors">
+              <Link key={link.page} href={link.href} className="hover:text-white transition-colors">
                 {link.label}
-              </a>
+              </Link>
             )
           )}
         </div>
 
-        {/* Reservation Button */}
-        <motion.a
+        <motion.Link
           href="/special-promo#reservation"
           whileHover={{ scale: 1.04 }}
           whileTap={{ scale: 0.96 }}
           className="bg-[#451A14] text-[#EBE0D3] rounded-full px-6 py-2.5 text-[13px] font-semibold hover:bg-[#31110d] transition-colors ml-4 hidden md:block"
         >
           Reservasi
-        </motion.a>
+        </motion.Link>
 
-        {/* Mobile Hamburger */}
         <motion.button
           whileTap={{ scale: 0.9 }}
           onClick={() => setIsMenuOpen((open) => !open)}
@@ -75,7 +88,6 @@ export default function Navbar({ activePage = 'home' }: { activePage?: NavPage }
           <span className="text-lg leading-none">{isMenuOpen ? 'x' : '='}</span>
         </motion.button>
 
-        {/* Mobile Dropdown */}
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div
@@ -85,19 +97,19 @@ export default function Navbar({ activePage = 'home' }: { activePage?: NavPage }
               className="absolute top-full right-0 mt-3 w-56 border border-white/20 bg-[#451A14]/95 backdrop-blur-md p-3 shadow-2xl md:hidden rounded-2xl"
             >
               {navLinks.map((link) => (
-                <a
+                <Link
                   key={link.page}
                   href={link.href}
                   onClick={() => setIsMenuOpen(false)}
                   className={link.page === activePage ? 'block px-4 py-3 text-xs uppercase tracking-widest text-white bg-white/10 rounded-xl' : 'block px-4 py-3 text-xs uppercase tracking-widest text-white/80 hover:bg-white/10 hover:text-white transition-colors rounded-xl'}
                 >
                   {link.label}
-                </a>
+                </Link>
               ))}
               <div className="border-t border-white/20 mt-2 pt-2">
-                <a href="#" onClick={() => setIsMenuOpen(false)} className="block px-4 py-3 text-xs uppercase tracking-widest text-[#EBE0D3] font-bold hover:bg-white/10 rounded-xl transition-colors">
+                <Link href="/special-promo#reservation" onClick={() => setIsMenuOpen(false)} className="block px-4 py-3 text-xs uppercase tracking-widest text-[#EBE0D3] font-bold hover:bg-white/10 rounded-xl transition-colors">
                   Reservasi
-                </a>
+                </Link>
               </div>
             </motion.div>
           )}
