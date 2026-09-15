@@ -1,289 +1,163 @@
-'use client';
-import React, { useState, useEffect } from 'react';
-import { Menu, X, ChevronRight, Loader2 } from 'lucide-react';
+﻿'use client'
+import React, { useState } from 'react';
 
-const Youtube = ({ size = 18 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17" />
-    <path d="m10 15 5-3-5-3v6Z" />
-  </svg>
-);
+const MenuPage = () => {
+  const [activeMenu, setActiveMenu] = useState('menu1');
 
-const Instagram = ({ size = 18 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
-    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
-  </svg>
-);
-
-const Facebook = ({ size = 18 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-  </svg>
-);
-
-export default function App() {
-  type MenuCategory = 'food' | 'beverage' | 'dessert';
-  const [activeTab, setActiveTab] = useState<MenuCategory>('food');
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isPdfLoading, setIsPdfLoading] = useState(true);
-
-  // Menyisipkan font Google secara dinamis
-  useEffect(() => {
-    const link = document.createElement('link');
-    link.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap';
-    link.rel = 'stylesheet';
-    document.head.appendChild(link);
-    return () => {
-      document.head.removeChild(link);
-    };
-  }, []);
-
-  const pdfMenus: Record<MenuCategory, string> = {
-    food: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
-    beverage: 'https://s2.q4cdn.com/175719177/files/doc_presentations/Placeholder-PDF.pdf',
-    dessert: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-  };
-
-  const handleTabChange = (category: MenuCategory) => {
-    if (activeTab === category) return;
-    setActiveTab(category);
-    setIsPdfLoading(true);
-  };
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
+  const menuOptions = [
+    { id: 'menu1', label: 'Menu 1', pdfUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' },
+    { id: 'menu2', label: 'Menu 2', pdfUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' }, // Reused dummy for testing
+    { id: 'menu3', label: 'Menu 3', pdfUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' }, // Reused dummy for testing
+    { id: 'menu4', label: 'Menu 4', pdfUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' },
+  ];
 
   return (
-    <div className="font-sans antialiased bg-[#f4eadc] text-[#4a2511] overflow-x-hidden" style={{ fontFamily: "'Inter', sans-serif" }}>
+    <div className="font-serif text-[#3e1f1c] bg-[#F7E7CE] min-h-screen">
       
-      {/* Navbar (Absolute over hero) */}
-      <header className="absolute top-0 left-0 w-full z-50 py-4 px-6 md:px-12 lg:px-24 text-white">
-        <div className="flex justify-between items-center max-w-7xl mx-auto">
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full border border-white/50 flex items-center justify-center text-xl tracking-wider" style={{ fontFamily: "'Playfair Display', serif" }}>
-              DN
-            </div>
-            <div className="flex flex-col text-sm uppercase tracking-widest font-semibold leading-tight">
-              <span>Dapoer</span>
-              <span>Nusantara</span>
-            </div>
-          </div>
-
-          {/* Desktop Menu */}
-          <nav className="hidden lg:flex items-center gap-8 text-sm uppercase tracking-wide">
-            <a href="#" className="hover:text-[#e8cca6] transition-colors">Home</a>
-            <a href="#menu" className="hover:text-[#e8cca6] transition-colors border border-white/30 rounded-full px-4 py-1 backdrop-blur-sm">Menu</a>
-            <a href="#" className="hover:text-[#e8cca6] transition-colors">Special Promo</a>
-            <a href="#" className="hover:text-[#e8cca6] transition-colors">About</a>
-            <a href="#" className="hover:text-[#e8cca6] transition-colors">Contact Us</a>
-            <a href="#" className="hover:text-[#e8cca6] transition-colors">Blog</a>
-          </nav>
-
-          {/* Reservation Button (Desktop) */}
-          <div className="hidden md:block">
-            <a href="#" className="bg-[#3a1008] text-white hover:bg-[#3a1008]/80 px-6 py-2.5 rounded-sm text-sm uppercase tracking-widest font-semibold transition-all">
-              Reservation
-            </a>
-          </div>
-
-          {/* Mobile Menu Toggle */}
-          <button className="lg:hidden text-white focus:outline-none" onClick={toggleMobileMenu}>
-            {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
-          </button>
-        </div>
-
-        {/* Mobile Menu Dropdown */}
-        {isMobileMenuOpen && (
-          <div className="absolute top-full left-0 w-full bg-[#3a1008] flex flex-col items-center py-6 gap-4 shadow-xl lg:hidden">
-            <a href="#" className="text-white hover:text-[#e8cca6] uppercase tracking-wide" onClick={toggleMobileMenu}>Home</a>
-            <a href="#menu" className="text-white hover:text-[#e8cca6] uppercase tracking-wide" onClick={toggleMobileMenu}>Menu</a>
-            <a href="#" className="text-white hover:text-[#e8cca6] uppercase tracking-wide" onClick={toggleMobileMenu}>Special Promo</a>
-            <a href="#" className="text-white hover:text-[#e8cca6] uppercase tracking-wide" onClick={toggleMobileMenu}>About</a>
-            <a href="#" className="text-white hover:text-[#e8cca6] uppercase tracking-wide" onClick={toggleMobileMenu}>Contact Us</a>
-            <a href="#" className="text-white hover:text-[#e8cca6] uppercase tracking-wide" onClick={toggleMobileMenu}>Blog</a>
-            <a href="#" className="bg-[#e8cca6] text-[#3a1008] px-6 py-2 rounded-sm text-sm uppercase font-semibold mt-2">Reservation</a>
-          </div>
-        )}
-      </header>
-
-      {/* Hero Section */}
-      <section className="relative w-full h-[80vh] min-h-[600px] overflow-hidden flex items-center justify-center rounded-b-[50%_60px] md:rounded-b-[50%_120px]">
-        {/* Background Image */}
-        <img 
-          src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80" 
-          alt="Restaurant Interior" 
-          className="absolute inset-0 w-full h-full object-cover z-0" 
-        />
-        
-        {/* Dark Overlay */}
-        <div className="absolute inset-0 bg-black/50 z-10"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-[#3a1008]/80 to-transparent z-10"></div>
-
-        {/* Hero Content */}
-        <div className="relative z-20 text-center text-white px-4 max-w-4xl mx-auto mt-16">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight drop-shadow-lg" style={{ fontFamily: "'Playfair Display', serif" }}>
-            Lorem ipsum dolor sit amet,<br/>consectetur
+      {}
+      <div 
+        className="relative w-full h-[800px] bg-cover bg-center overflow-hidden rounded-b-[40%] shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
+        style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80")' }}
+      >
+        <div className="absolute inset-0 bg-black/50"></div>
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-[#F7E7CE] p-8 mt-20">
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 drop-shadow-lg tracking-wide">
+            Lorem ipsum dolor sit amet.<br />consectetur
           </h1>
-          <p className="text-sm md:text-base font-light max-w-2xl mx-auto mb-10 text-white/90">
+          <p className="max-w-2xl text-base md:text-lg mb-10 drop-shadow-md opacity-90 leading-relaxed">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
           </p>
-          
-          {/* Hero Buttons */}
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-            <a href="#" className="bg-[#f4eadc] text-[#3a1008] px-8 py-3 rounded-md flex items-center justify-between w-48 font-semibold hover:bg-white transition-colors">
-              <span>Reservation Now</span>
-              <ChevronRight size={16} />
-            </a>
-            <a href="#menu" className="bg-[#f4eadc] text-[#3a1008] px-8 py-3 rounded-md flex items-center justify-between w-48 font-semibold hover:bg-white transition-colors">
-              <span>View Menu</span>
-              <ChevronRight size={16} />
-            </a>
+          <div className="flex space-x-6">
+            <button className="px-8 py-3 bg-[#F7E7CE] text-[#3e1f1c] rounded-full font-bold hover:bg-white transition duration-300 flex items-center shadow-xl">
+              Reservation <span className="ml-3">➔</span>
+            </button>
+            <button className="px-8 py-3 bg-transparent border-2 border-[#F7E7CE] text-[#F7E7CE] rounded-full font-bold hover:bg-[#F7E7CE] hover:text-[#3e1f1c] transition duration-300 flex items-center shadow-xl">
+              Contact us <span className="ml-3">➔</span>
+            </button>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* Intro / About Section */}
-      <section className="py-20 px-6 md:px-12 lg:px-24 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          {/* Image Left */}
-          <div className="relative w-full aspect-square md:aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl transform hover:scale-[1.02] transition-transform duration-500">
-            <img 
-              src="https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&q=80" 
-              alt="Dining Table" 
-              className="w-full h-full object-cover" 
-            />
-          </div>
-          
-          {/* Text Right */}
-          <div className="flex flex-col justify-center">
-            <h2 className="text-3xl md:text-4xl text-[#3a1008] font-bold mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
-              Lorem Ipsum
-            </h2>
-            <p className="text-[#4a2511]/80 leading-relaxed mb-4 text-justify md:text-left">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-            </p>
-          </div>
+      {}
+      <div className="max-w-7xl mx-auto px-6 py-32 flex flex-col md:flex-row items-center gap-20">
+        <div className="w-full md:w-1/2 flex justify-end relative">
+          {/* Decorative background shape to match the design's cutout feel */}
+          <div className="absolute top-4 left-1/4 w-3/4 h-full bg-[#E8D5BA] rounded-tl-[4rem] rounded-br-[4rem] -z-10"></div>
+          <img 
+            src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
+            alt="Dining Table" 
+            className="w-4/5 object-cover h-[450px] rounded-tl-[4rem] rounded-br-[4rem] shadow-2xl z-10"
+          />
         </div>
-      </section>
-
-      {/* Menu / PDF Section */}
-      <section id="menu" className="py-16 px-4 md:px-12 lg:px-24 bg-[#f4eadc]">
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <h2 className="text-3xl md:text-5xl text-[#3a1008] font-bold mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
-            Lorem ipsum dolor sit<br/>amet, consectetur
-          </h2>
-          <p className="text-[#4a2511]/80 text-sm md:text-base">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        <div className="w-full md:w-1/2 pr-12">
+          <h2 className="text-4xl font-bold mb-8 text-[#4a2e2b]">Lorem Ipsum</h2>
+          <p className="text-[#5a3e3b] leading-loose text-lg mb-6 text-justify">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
           </p>
         </div>
+      </div>
 
-        {/* PDF Menu Container */}
-        <div className="max-w-5xl mx-auto bg-[#3a1008] rounded-t-3xl overflow-hidden shadow-2xl border-4 border-[#3a1008]">
+      {}
+      <div className="text-center py-16 px-4">
+        <h2 className="text-5xl font-bold mb-6 text-[#4a2e2b]">
+          Lorem ipsum dolor sit<br />amet. consectetur
+        </h2>
+        <p className="max-w-3xl mx-auto text-[#5a3e3b] text-lg leading-relaxed">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        </p>
+      </div>
+
+      {}
+      <div className="bg-[#440B0B] w-full py-24 px-4">
+        <div className="max-w-5xl mx-auto">
           
-          {/* Menu Tabs */}
-          <div className="flex flex-row overflow-x-auto">
-            <button 
-              onClick={() => handleTabChange('food')} 
-              className={`flex-1 py-4 px-6 text-sm md:text-base font-semibold uppercase tracking-wider whitespace-nowrap transition-colors duration-300 ${activeTab === 'food' ? 'bg-[#3a1008] text-white' : 'bg-[#2b0b05] text-[#a3958f] border-b-2 border-[#5a1f11] hover:bg-[#4a150a] hover:text-[#e8cca6]'}`}
-            >
-              Food Menu
-            </button>
-            <button 
-              onClick={() => handleTabChange('beverage')} 
-              className={`flex-1 py-4 px-6 text-sm md:text-base font-semibold uppercase tracking-wider whitespace-nowrap border-l border-[#3a1008]/50 transition-colors duration-300 ${activeTab === 'beverage' ? 'bg-[#3a1008] text-white' : 'bg-[#2b0b05] text-[#a3958f] border-b-2 border-[#5a1f11] hover:bg-[#4a150a] hover:text-[#e8cca6]'}`}
-            >
-              Beverage Menu
-            </button>
-            <button 
-              onClick={() => handleTabChange('dessert')} 
-              className={`flex-1 py-4 px-6 text-sm md:text-base font-semibold uppercase tracking-wider whitespace-nowrap border-l border-[#3a1008]/50 transition-colors duration-300 ${activeTab === 'dessert' ? 'bg-[#3a1008] text-white' : 'bg-[#2b0b05] text-[#a3958f] border-b-2 border-[#5a1f11] hover:bg-[#4a150a] hover:text-[#e8cca6]'}`}
-            >
-              Desserts
-            </button>
+          {/* Radio Button Tabs - Styled to look like connected tabs */}
+          <div className="flex mx-auto w-3/4 max-w-3xl -mb-px">
+            {menuOptions.map((menu, index) => (
+              <label 
+                key={menu.id} 
+                className={`flex-1 text-center py-4 px-6 cursor-pointer transition-all duration-300 border border-[#F7E7CE]
+                  ${activeMenu === menu.id 
+                    ? 'bg-[#F7E7CE] text-[#440B0B] font-bold border-b-transparent' 
+                    : 'bg-[#8B5A55] text-[#F7E7CE] hover:bg-[#A0706A] opacity-80'
+                  }
+                  ${index === 0 ? 'rounded-tl-lg' : ''}
+                  ${index === menuOptions.length - 1 ? 'rounded-tr-lg' : ''}
+                `}
+              >
+                <input
+                  type="radio"
+                  name="menuSelection"
+                  value={menu.id}
+                  checked={activeMenu === menu.id}
+                  onChange={() => setActiveMenu(menu.id)}
+                  className="hidden" 
+                />
+                <span className="text-lg tracking-wider">{menu.label}</span>
+              </label>
+            ))}
           </div>
-
-          {/* The PDF Viewer (White Area) */}
-          <div className="bg-white w-full h-[600px] md:h-[800px] relative p-1 md:p-2">
-            
-            {/* Loading indicator */}
-            {isPdfLoading && (
-              <div className="absolute inset-0 flex items-center justify-center bg-gray-50 z-10">
-                <div className="flex flex-col items-center text-[#3a1008]">
-                  <Loader2 className="w-10 h-10 animate-spin mb-4" />
-                  <p className="italic" style={{ fontFamily: "'Playfair Display', serif" }}>Loading Menu...</p>
-                </div>
-              </div>
-            )}
-
-            {/* Iframe Container */}
-            <iframe 
-              src={pdfMenus[activeTab]} 
-              className="w-full h-full border-none shadow-inner rounded-sm relative z-20"
-              title="Menu PDF Viewer"
-              onLoad={() => setIsPdfLoading(false)}
-            />
+          
+          {/* PDF Container - Large rectangle area */}
+          <div className="bg-[#F7E7CE] w-full h-[900px] flex items-center justify-center mx-auto border-4 border-[#F7E7CE] shadow-2xl relative z-10">
+             <iframe 
+                src={menuOptions.find(m => m.id === activeMenu)?.pdfUrl} 
+                width="100%" 
+                height="100%" 
+                title="Restaurant Menu"
+                className="border-none bg-white"
+             >
+                <p>It appears your browser doesn't support iframes or PDF viewing. You can <a href={menuOptions.find(m => m.id === activeMenu)?.pdfUrl}>download the menu here</a>.</p>
+             </iframe>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* Footer Section */}
-      <footer className="bg-[#3a1008] text-white mt-20 pt-20 pb-10 px-6 md:px-12 lg:px-24 rounded-t-[50%_40px] md:rounded-t-[50%_80px]">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
+      {}
+      <div className="max-w-7xl mx-auto px-6 py-32">
+        <div className="mb-16">
+          <p className="text-sm uppercase tracking-widest text-[#5a3e3b] mb-3 font-semibold">Lorem ipsum</p>
+          <h2 className="text-5xl font-bold text-[#4a2e2b]">Lorem ipsum dolor sit amet</h2>
+        </div>
+
+        {/* Gallery Grid Layout matching the design */}
+        <div className="flex flex-col gap-6">
+           {/* Top Row: 3 smaller images */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <img src="https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Restaurant interior" className="w-full h-72 object-cover rounded-xl shadow-lg hover:opacity-90 transition-opacity" />
+            <img src="https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Restaurant interior" className="w-full h-72 object-cover rounded-xl shadow-lg hover:opacity-90 transition-opacity" />
+            <img src="https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Restaurant interior" className="w-full h-72 object-cover rounded-xl shadow-lg hover:opacity-90 transition-opacity" />
+          </div>
           
-          {/* Footer Col 1: Logo */}
-          <div className="flex flex-col items-start">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-full border border-[#e8cca6] flex items-center justify-center text-2xl text-[#e8cca6] tracking-wider" style={{ fontFamily: "'Playfair Display', serif" }}>
-                DN
-              </div>
-              <div className="flex flex-col text-sm uppercase tracking-widest font-bold leading-tight text-[#e8cca6]">
-                <span>Dapoer</span>
-                <span>Nusantara</span>
-              </div>
-            </div>
-            <p className="text-white/50 text-sm mt-auto mb-0 pt-12">
-              Copyright © 2024. All rights reserved.
-            </p>
-          </div>
-
-          {/* Footer Col 2: Menu Links */}
-          <div className="flex flex-col gap-3">
-            <h4 className="text-xl mb-4 text-[#e8cca6]" style={{ fontFamily: "'Playfair Display', serif" }}>Menu</h4>
-            <a href="#" className="text-white/80 hover:text-[#e8cca6] text-sm transition-colors">Home</a>
-            <a href="#menu" className="text-white/80 hover:text-[#e8cca6] text-sm transition-colors">Menu</a>
-            <a href="#" className="text-white/80 hover:text-[#e8cca6] text-sm transition-colors">Special Promo</a>
-            <a href="#" className="text-white/80 hover:text-[#e8cca6] text-sm transition-colors">About</a>
-            <a href="#" className="text-white/80 hover:text-[#e8cca6] text-sm transition-colors">Special Promo</a>
-            <a href="#" className="text-white/80 hover:text-[#e8cca6] text-sm transition-colors">Blog</a>
-          </div>
-
-          {/* Footer Col 3: Text content */}
-          <div className="lg:col-span-2 flex flex-col">
-            <h4 className="text-xl mb-4 text-[#e8cca6]" style={{ fontFamily: "'Playfair Display', serif" }}>Visit Us</h4>
-            <p className="text-white/80 text-sm leading-relaxed mb-8 max-w-sm">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            </p>
-            
-            <h4 className="text-lg mb-4 text-[#e8cca6]" style={{ fontFamily: "'Playfair Display', serif" }}>Social</h4>
-            <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#e8cca6] hover:text-[#3a1008] transition-all">
-                <Youtube size={18} />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#e8cca6] hover:text-[#3a1008] transition-all">
-                <Instagram size={18} />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#e8cca6] hover:text-[#3a1008] transition-all">
-                <Facebook size={18} />
-              </a>
-            </div>
+          {/* Middle Row: 1 large image spanning full width */}
+          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Table setup" className="w-full h-[500px] object-cover rounded-xl shadow-lg hover:opacity-90 transition-opacity" />
+          
+          {/* Bottom Row: 2 medium images */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Restaurant interior" className="w-full h-96 object-cover rounded-xl shadow-lg hover:opacity-90 transition-opacity" />
+            <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Restaurant interior" className="w-full h-96 object-cover rounded-xl shadow-lg hover:opacity-90 transition-opacity" />
           </div>
         </div>
-      </footer>
+
+        {}
+        <div className="text-center mt-24 px-4">
+          <h3 className="text-3xl font-bold mb-6 text-[#4a2e2b]">Lorem ipsum dolor sit amet</h3>
+          <p className="max-w-2xl mx-auto text-[#5a3e3b] mb-10 text-base leading-relaxed">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          </p>
+          <div className="flex justify-center space-x-8">
+            <button className="px-10 py-3 bg-[#440B0B] text-[#F7E7CE] rounded-full font-bold hover:bg-[#6a1717] transition duration-300 flex items-center shadow-xl">
+              Reservation <span className="ml-3">➔</span>
+            </button>
+            <button className="px-10 py-3 bg-[#440B0B] text-[#F7E7CE] rounded-full font-bold hover:bg-[#6a1717] transition duration-300 flex items-center shadow-xl">
+              View Menu <span className="ml-3">➔</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      
     </div>
   );
-}
+};
+
+export default MenuPage;
